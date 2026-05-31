@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
     "name" : "Johny Walker",
-    "email" : "testgdf@example.com",
+    "email" : "testgdfds@example.com",
     "address": "123 main street",
     "dateOfBirth" : "1994-09-09",
     "registeredDate": "2024-11-28"
