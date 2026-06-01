@@ -5,6 +5,7 @@ import org.pm.patientservice.dto.PatientResponseDTO;
 import org.pm.patientservice.exception.EmailAlreadyExistsException;
 import org.pm.patientservice.exception.PatientNotFoundException;
 import org.pm.patientservice.grpc.BillingServiceGrpcClient;
+import org.pm.patientservice.kafka.KafkaProducer;
 import org.pm.patientservice.mapper.PatientMapper;
 import org.pm.patientservice.model.Patient;
 import org.pm.patientservice.repository.PatientRepository;
@@ -19,11 +20,13 @@ import java.util.UUID;
 @Service
 public class PatientService {
     private static final Logger log = LoggerFactory.getLogger(PatientService.class);
+    private final KafkaProducer kafkaProducer;
     private PatientRepository patientRepository;
     private final BillingServiceGrpcClient billingServiceGrpcClient;
-    public PatientService(PatientRepository patientRepository, BillingServiceGrpcClient billingServiceGrpcClient) {
+    public PatientService(PatientRepository patientRepository, BillingServiceGrpcClient billingServiceGrpcClient, KafkaProducer kafkaProducer) {
         this.patientRepository = patientRepository;
         this.billingServiceGrpcClient = billingServiceGrpcClient;
+        this.kafkaProducer = kafkaProducer;
     }
 
     public List<PatientResponseDTO> getPatients() {
@@ -41,6 +44,7 @@ public class PatientService {
         try {
             log.info("Calling billing service for patient id {}", patient.getId());
             billingServiceGrpcClient.createBillingAccount(patient.getId().toString(), patient.getName(), patient.getEmail());
+            kafkaProducer.sendEvent(patient);
         } catch (RuntimeException ex) {
             log.error("Billing account creation failed for patient id {}", patient.getId(), ex);
             throw ex;
