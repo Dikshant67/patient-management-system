@@ -15,13 +15,18 @@ public class BillingGrpcService extends BillingServiceGrpc.BillingServiceImplBas
   @Override
   public void createBillingAccount(BillingRequest billingRequest,
                                    StreamObserver<BillingResponse> responseStreamObserver){
-    log.info("createBillingAccount request received for {}", billingRequest.toString());
-    //Bussiness logic eg. save to db , perform calculates etc
-    BillingResponse response= BillingResponse.newBuilder()
-            .setAccountId("fsdfds")
+    log.info("gRPC createBillingAccount request received for Patient ID: {}, Name: {}, Email: {}",
+            billingRequest.getPatientId(), billingRequest.getName(), billingRequest.getEmail());
+    
+    // Business logic e.g. save to DB, perform calculations etc.
+    BillingResponse response = BillingResponse.newBuilder()
+            .setAccountId("ACC-" + billingRequest.getPatientId())
             .setStatus("ACTIVE")
             .build();
+            
+    log.info("Sending gRPC BillingResponse: Account ID {}, Status {}", response.getAccountId(), response.getStatus());
     responseStreamObserver.onNext(response);
     responseStreamObserver.onCompleted();
+    log.info("Successfully completed gRPC createBillingAccount call for Patient ID: {}", billingRequest.getPatientId());
   }
 }

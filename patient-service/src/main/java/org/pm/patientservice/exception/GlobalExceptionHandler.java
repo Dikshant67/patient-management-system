@@ -21,23 +21,33 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getFieldErrors().forEach((e) -> {
             errors.put(e.getField(), e.getDefaultMessage());
         });
+        log.warn("Validation error encountered: {}", errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<Map<String, String>> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
-        log.warn("Email Already Exists {}", ex.getMessage());
+        log.warn("Email Already Exists Exception: {}", ex.getMessage());
         Map<String, String> errors = new HashMap<>();
 
         errors.put("message", "email already exists");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
+
     @ExceptionHandler(PatientNotFoundException.class)
     public ResponseEntity<Map<String, String>> handlePatientNotFoundException(PatientNotFoundException ex) {
-        log.warn("Patient not found {}", ex.getMessage());
+        log.warn("Patient Not Found Exception: {}", ex.getMessage());
         Map<String, String> errors = new HashMap<>();
         errors.put("message", "Patient not found");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleGenericException(Exception ex) {
+        log.error("Unhandled exception caught in GlobalExceptionHandler: {}", ex.getMessage(), ex);
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", "An unexpected error occurred");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errors);
     }
 
 }

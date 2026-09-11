@@ -24,9 +24,11 @@ public class KafkaProducer {
                 .setEventType("PATIENT_CREATED")
                 .build();
         try {
-          kafkaTemplate.send("patient",event.toByteArray());
-        }catch (Exception e){
-            log.error("Error sending Patient Created Event : {}",event);
+            log.info("Sending PATIENT_CREATED event to topic 'patient' for patient ID: {}", patient.getId());
+            kafkaTemplate.send("patient", event.toByteArray());
+            log.info("Successfully dispatched PATIENT_CREATED event for patient ID: {}", patient.getId());
+        } catch (Exception e) {
+            log.error("Error sending Patient Created Event for patient ID {}: {}", patient.getId(), e.getMessage(), e);
         }
     }
 }
