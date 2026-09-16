@@ -9,6 +9,7 @@
         <module name="analytics-service" />
         <module name="api-gateway" />
         <module name="patient-service" />
+        <module name="integration-tests" />
         <module name="billing-service" />
       </profile>
       <profile name="Annotation profile for auth-service" enabled="true">
