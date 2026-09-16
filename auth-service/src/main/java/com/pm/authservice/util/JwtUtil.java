@@ -4,6 +4,7 @@ package com.pm.authservice.util;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import java.util.Base64;
 import java.util.Date;
 
 @Component
+@Slf4j
 public class JwtUtil {
 
     private final Key secretKey;
@@ -39,6 +41,7 @@ public class JwtUtil {
                     .build()
                     .parseSignedClaims(token);
         } catch (JwtException e){
+            log.info("Exception caught while validating JWT Token");
             throw new JwtException("Invalid JWT Token");
 
         }

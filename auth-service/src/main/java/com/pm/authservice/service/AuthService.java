@@ -5,9 +5,11 @@ import com.pm.authservice.exception.InvalidCredentialException;
 import com.pm.authservice.util.JwtUtil;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -42,6 +44,7 @@ public class AuthService {
     }
     public boolean validateToken(String token) {
         try {
+            log.info("Validating JWT Token : validateToken() AuthService");
             jwtUtil.validateToken(token);
             return true;
         }catch (JwtException e){
